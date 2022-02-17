@@ -12,14 +12,18 @@
                       <form action="{{ route('login.post') }}" method="POST">
                           @csrf
                           <div class="form-group row">
-                              <label for="email_address" class="col-md-4 col-form-label text-md-right">E-Mail Address</label>
-                              <div class="col-md-6">
-                                  <input type="text" id="email_address" class="form-control" name="email" required autofocus>
-                                  @if ($errors->has('email'))
-                                      <span class="text-danger">{{ $errors->first('email') }}</span>
-                                  @endif
-                              </div>
-                          </div>
+                            <label for="name" class="col-md-4 col-form-label text-md-right">Username Or Email</label>
+                           
+                            <div class="col-md-6">
+                                <input id="name" type="name" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required  autofocus>
+                           
+                                @error('name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
   
                           <div class="form-group row">
                               <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>

@@ -19,7 +19,11 @@ class AuthController extends Controller
     public function index()
     {
         return view('auth.login');
-    }  
+    } 
+    public function home()
+    {
+        return view('home');
+    }
       
     /**
      * Write code on Method
@@ -38,18 +42,21 @@ class AuthController extends Controller
      */
     public function postLogin(Request $request)
     {
-        $request->validate([
-            'email' => 'required|min:3',
-            'password' => 'required|min:3',
-        ]);
-   
-        $credentials = $request->only('email', 'password');
-        if (Auth::attempt($credentials)) {
-            return redirect()->intended('dashboard')
-                        ->withSuccess('You have Successfully loggedin');
-        }
+        $input = $request->all();
   
-        return redirect("login")->withSuccess('Oppes! You have entered invalid credentials');
+        $this->validate($request, [
+            'name' => 'required',
+            'password' => 'required',
+        ]);
+  
+        $fieldType = filter_var($request->name, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+        if(auth()->attempt(array($fieldType => $input['name'], 'password' => $input['password'])))
+        {
+            return redirect()->route('home');
+        }else{
+            return redirect()->route('login')
+                ->with('error','Email-Address And Password Are Wrong.');
+        }
     }
       
     /**
@@ -60,7 +67,7 @@ class AuthController extends Controller
     public function postRegistration(Request $request)
     {  
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|min:3',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
         ]);
